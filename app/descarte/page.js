@@ -2,7 +2,7 @@
 import "app/style.css";
 import React, { useEffect, useState } from "react";
 import { Container, Form, Row, Col } from "react-bootstrap";
-import CaixaSelecao from "app/CaixaSelecao.jsx";
+import CaixaSelecao from "./CaixaSelecao.jsx";
 import ImageWithMessage from "../msgExplicativa/ImageWithMessage.jsx";
 import Tabela from "./Tabela";
 import Axios from "axios";
@@ -167,6 +167,7 @@ export default function DescarteVacina() {
             campoChave="id"
             campoExibicao="nome"
             funcaoSelecao={setVacinaSelecionada}
+            setQuantidade={setQuantidadeAtual}
           />
         </div>
         <br />
