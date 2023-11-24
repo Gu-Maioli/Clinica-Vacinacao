@@ -1,0 +1,89 @@
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.message {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px;
+  font-size: 14px;
+  color: white;
+  display: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.image-container:hover .message {
+  display: block;
+}
+
+.success {
+  background-color: #e6f7e4;
+  color: #2e7d32;
+  border-color: #81c784;
+}
+/* Estilo base para o card */
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Estilo para o cabeçalho do card */
+.card-header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Estilo para o corpo da mensagem */
+.card-body {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Estilo para a mensagem de sucesso */
+.success {
+  background-color: #e6f7e4;
+  color: #2e7d32;
+  border-color: #81c784;
+}
+
+/* Estilo para a mensagem de erro */
+.error {
+  background-color: #ffcdd2;
+  color: #c62828;
+  border-color: #e57373;
+}
+
+/*
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.message {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  font-size: 14px;
+  display: none;
+}
+
+.image-container:hover .message {
+  display: block;
+}
+
+*/

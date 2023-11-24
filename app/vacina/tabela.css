@@ -1,0 +1,16 @@
+table, th, td {
+    border:1px solid black;
+    width: 50%;
+}
+
+.td-nomeId, .th-nomeId{
+    width:60%
+}
+
+.td-cargoId, .th-cargoId{
+    width:30%
+}
+
+.td-acoesId, .th-acoesId{
+    width:10%
+}
