@@ -1,13 +1,10 @@
 "use client";
 import "app/style.css";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CaixaSelecao from "app/CaixaSelecao.jsx";
 import Tabela from "./Tabela";
 import Axios from "axios";
 import ImageWithMessage from "../msgExplicativa/ImageWithMessage.jsx";
-import InputWithHoverMessage from "../msgExplicativa/InputWithHoverMessage.jsx";
-import Pagination from "../tabela/tabelaPadrao.jsx";
 import MsgRequired from "../msgExplicativa/msgRequired";
 
 export default function Agendar() {
@@ -15,7 +12,6 @@ export default function Agendar() {
   const [valor, setValor] = useState();
   const [exibe, setExibe] = useState(false);
   const [pesquisa, setPesquisa] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
   const [msgExplicativa, setMsgExplicativa] = useState(
     "Função responsável por agendar aplicação do paciente"
   );
@@ -39,12 +35,9 @@ export default function Agendar() {
     // Adicione mais colunas conforme necessário
   ];
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
+  const getDias = (data) => {
+    console.log(data);
+    return data.split("T")[0].split("-")[2];
   };
 
   const handleChange = (event) => {
@@ -56,41 +49,24 @@ export default function Agendar() {
     } else {
       setListaAtendimento(
         listaAtendimento.filter((item) => {
-          return item["nomePaciente"]
-            .toLowerCase()
-            .includes(pesquisa.toLowerCase());
+          return (
+            item["nomePaciente"]
+              .toLowerCase()
+              .includes(pesquisa.toLowerCase()) ||
+            getDias(item["dataInicio"])
+              .toLowerCase()
+              .includes(pesquisa.toLowerCase())
+          );
         })
       );
     }
   };
 
   useEffect(() => {
-    Axios.post("http://localhost:3001/login", {
-      email: "teste@teste",
-      password: "1234",
-    }).then((response) => {
-      console.log("data: " + response.data);
-    });
-  });
-
-  useEffect(() => {
     Axios.get("http://localhost:3001/getAtendimento").then((response) => {
       setListaAtendimento(response.data);
-      console.log(response.data);
     });
   }, []);
-
-  const limpaCampos = () => {
-    setPacienteSelecionado({ id: 0 });
-    setDataSelecionada({
-      dataInicio: "",
-    });
-    setEditAtendimento({
-      descricao: "",
-      dataInicio: "",
-      paciente_id: 0,
-    });
-  };
 
   const mudarValores = (valor) => {
     setExibe(false);
@@ -108,7 +84,8 @@ export default function Agendar() {
 
   const verificaDados = () => {
     if (typeof valor == "undefined") {
-      setMsg("Preencha os Campos obrigatórios");
+      setMsg("Preencha os Campos Obrigatórios");
+      console.log("> " + msg);
       setExibe(true);
       return false;
     } else {
@@ -133,13 +110,12 @@ export default function Agendar() {
 
   const clickButton = () => {
     if (verificaDados()) {
-      if (editAtendimento.id == 0) {
+      if (typeof editAtendimento.id == "undefined" || editAtendimento.id == 0) {
         Axios.post("http://localhost:3001/cadastrarAtendimento", {
           descricao: valor.descricao,
           dataInicio: dataSelecionada.dataInicio,
           paciente_id: pacienteSelecionado.id,
         }).then(() => {
-          limpaCampos();
           setListaAtendimento([
             ...listaAtendimento,
             {
@@ -170,7 +146,6 @@ export default function Agendar() {
                 : value;
             })
           );
-          limpaCampos();
           Axios.get("http://localhost:3001/getAtendimento").then((response) => {
             setListaAtendimento(response.data);
           });
@@ -206,53 +181,58 @@ export default function Agendar() {
                 type="text"
                 name="id"
               />
-              <div className="form-group col-md-3">
-                <MsgRequired
-                  id={"pacienteID"}
-                  texto={"Paciente"}
-                  obrigatorio={true}
-                />
-                <CaixaSelecao
-                  id="pacienteID"
-                  enderecoFonteDados="http://localhost:3001/getAllPaciente"
-                  campoChave="id"
-                  campoExibicao="nome"
-                  funcaoSelecao={setPacienteSelecionado}
-                />
+              <div className="row">
+                <div className="col-md-2">
+                  <MsgRequired
+                    id={"pacienteID"}
+                    texto={"Paciente"}
+                    obrigatorio={true}
+                  />
+                  <CaixaSelecao
+                    id="pacienteID"
+                    enderecoFonteDados="http://localhost:3001/getAllPaciente"
+                    campoChave="id"
+                    campoExibicao="nome"
+                    funcaoSelecao={setPacienteSelecionado}
+                  />
+                </div>
                 <br />
+                <div className="col-md-2">
+                  <MsgRequired
+                    id={"dataInicioId"}
+                    texto={"Data do Atendimento"}
+                    obrigatorio={true}
+                  />
+                  <input
+                    className="form-control"
+                    type="datetime-local"
+                    id="dataInicioId"
+                    defaultValue={editAtendimento.dataInicio}
+                    onChange={(e) => {
+                      getData(e);
+                    }}
+                    name="dataInicio"
+                  ></input>
+                </div>
               </div>
-              <div className="col-md-3 mb-3">
-                <MsgRequired
-                  id={"dataInicioId"}
-                  texto={"Data do Atendimento"}
-                  obrigatorio={true}
-                />
-                <input
-                  className="form-control"
-                  type="datetime-local"
-                  id="dataInicioId"
-                  defaultValue={editAtendimento.dataInicio}
-                  onChange={(e) => {
-                    getData(e);
-                  }}
-                  name="dataInicio"
-                ></input>
-              </div>
-              <div className="form-group col-md-3">
-                <MsgRequired
-                  id={"descricaoID"}
-                  texto={"Descrição"}
-                  obrigatorio={false}
-                />
-                <input
-                  id="descricaoID"
-                  className="form-control"
-                  defaultValue={editAtendimento.descricao}
-                  type="text"
-                  name="descricao"
-                  placeholder=""
-                  onChange={mudarValores}
-                />
+              <br />
+              <div className="row">
+                <div className="col-md-4">
+                  <MsgRequired
+                    id={"descricaoID"}
+                    texto={"Descrição"}
+                    obrigatorio={false}
+                  />
+                  <input
+                    id="descricaoID"
+                    className="form-control"
+                    defaultValue={editAtendimento.descricao}
+                    type="text"
+                    name="descricao"
+                    placeholder=""
+                    onChange={mudarValores}
+                  />
+                </div>
               </div>
               <br />
               <div
@@ -288,13 +268,12 @@ export default function Agendar() {
               <table className="table table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>Paciente</th>
-                    <th>Data Agendamento</th>
-                    <th>Descrição</th>
-                    <th>Ações</th>
+                    <th id="th-pacienteId">Paciente</th>
+                    <th id="th-dataId">Data Agendamento</th>
+                    <th id="th-descricaoId">Descrição</th>
+                    <th id="th-acoesId">Ações</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {typeof listaAtendimento != "undefined" &&
                     listaAtendimento.map((item) => {

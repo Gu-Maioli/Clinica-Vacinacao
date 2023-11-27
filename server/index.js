@@ -120,14 +120,19 @@ app.post("/cadastrarPaciente", (req, res) => {
   const { sexo } = req.body;
   const { endereco } = req.body;
   const { observacao } = req.body;
+  const { dataCadastro } = req.body;
 
   let sql =
-    "INSERT INTO paciente (nome, sexo, endereco, observacao) VALUES (?, ?, ?, ?)";
+    "INSERT INTO paciente (nome, sexo, endereco, observacao, dataCadastro) VALUES (?, ?, ?, ?, ?)";
 
-  db.query(sql, [nome, sexo, endereco, observacao], (err, result) => {
-    if (err) console.log("ERRO:" + err);
-    else res.send(result);
-  });
+  db.query(
+    sql,
+    [nome, sexo, endereco, observacao, dataCadastro],
+    (err, result) => {
+      if (err) console.log("ERRO:" + err);
+      else res.send(result);
+    }
+  );
 });
 
 app.put("/editarPaciente", (req, res) => {
@@ -136,14 +141,19 @@ app.put("/editarPaciente", (req, res) => {
   const { sexo } = req.body;
   const { endereco } = req.body;
   const { observacao } = req.body;
+  const { dataCadastro } = req.body;
 
   let sql =
-    "UPDATE paciente SET nome = ?, sexo = ?, endereco = ?, observacao = ? WHERE id = ?";
+    "UPDATE paciente SET nome = ?, sexo = ?, endereco = ?, observacao = ?, dataCadastro = ? WHERE id = ?";
 
-  db.query(sql, [nome, sexo, endereco, observacao, id], (err, result) => {
-    if (err) console.log("erro: " + err);
-    else res.send(result);
-  });
+  db.query(
+    sql,
+    [nome, sexo, endereco, observacao, dataCadastro, id],
+    (err, result) => {
+      if (err) console.log("erro: " + err);
+      else res.send(result);
+    }
+  );
 });
 
 app.get("/getPaciente", (req, res) => {
@@ -226,13 +236,14 @@ app.post("/cadastrarVenda", (req, res) => {
   const { quantidade } = req.body;
   const { paciente_id } = req.body;
   const { vacina_id } = req.body;
+  const { dataVenda } = req.body;
 
   let sql =
-    "INSERT INTO registrovenda (preco, descricao, quantidade, paciente_id, vacina_id) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO registrovenda (preco, descricao, quantidade, paciente_id, vacina_id, dataVenda) VALUES (?, ?, ?, ?, ?, ?)";
 
   db.query(
     sql,
-    [preco, descricao, quantidade, paciente_id, vacina_id],
+    [preco, descricao, quantidade, paciente_id, vacina_id, dataVenda],
     (err, result) => {
       if (err) console.log("ERRO:" + err);
       else res.send(result);
@@ -247,13 +258,14 @@ app.put("/editarVenda", (req, res) => {
   const { quantidade } = req.body;
   const { paciente_id } = req.body;
   const { vacina_id } = req.body;
+  const { dataVenda } = req.body;
 
   let sql =
-    "UPDATE registrovenda SET preco = ?, descricao = ?, quantidade = ?, paciente_id = ?, vacina_id = ? WHERE id = ?";
+    "UPDATE registrovenda SET preco = ?, descricao = ?, quantidade = ?, paciente_id = ?, vacina_id = ?, dataVenda = ? WHERE id = ?";
 
   db.query(
     sql,
-    [preco, descricao, quantidade, paciente_id, vacina_id, id],
+    [preco, descricao, quantidade, paciente_id, vacina_id, dataVenda, id],
     (err, result) => {
       if (err) console.log("erro: " + err);
       else res.send(result);
@@ -487,7 +499,7 @@ app.delete("/deleteAtendimento/:id", (req, res) => {
 // RELATORIOS
 app.get("/getVendasPaciente", (req, res) => {
   let sql =
-    'SELECT CONCAT(registrovenda.id, "-", paciente.NOME, ", " , paciente.endereco) AS pacienteNome, CONCAT(vacina.nome, ", ", fornecedor.nome, ", Lote:", vacina.lote) AS nomeVacina, registrovenda.preco AS precoUniVenda, registrovenda.quantidade AS qtdeVenda, (registrovenda.preco * registrovenda.quantidade) AS total FROM registrovenda INNER JOIN vacina ON vacina.id = registrovenda.vacina_id left JOIN paciente ON paciente.id = registrovenda.paciente_id INNER JOIN registrocompra ON registrocompra.vacina_id = vacina.id INNER JOIN fornecedor ON fornecedor.id = registrocompra.fornecedor_id WHERE paciente.id > 0';
+    'SELECT CONCAT(registrovenda.id, " - ", paciente.NOME) AS pacienteNome, paciente.endereco AS endereco, CONCAT(vacina.nome,", Lote:", vacina.lote) AS nomeVacina, registrovenda.preco AS precoUniVenda, registrovenda.quantidade AS qtdeVenda, (registrovenda.preco * registrovenda.quantidade) AS total FROM registrovenda INNER JOIN vacina ON vacina.id = registrovenda.vacina_id INNER JOIN paciente ON paciente.id = registrovenda.paciente_id WHERE paciente.id > 1';
 
   db.query(sql, (err, result) => {
     if (err) console.log(err);

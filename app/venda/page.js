@@ -16,19 +16,26 @@ export default function VendaVacina() {
   const [listaVacina, setListaVacina] = useState();
   const [vacinaSelecionada, setVacinaSelecionada] = useState();
   const [pacienteSelecionado, setPacienteSelecionado] = useState();
+  const [dataSelecionada, setDataSelecionada] = useState({
+    dataVenda: "",
+  });
 
   const [msgExplicativa, setMsgExplicativa] = useState(
     "Função responsável por registrar as vendas das vacinas feitas aos pacientes"
   );
 
-  const [editVenda, setEditVenda] = useState({
-    id: 0,
-    preco: "",
-    descricao: "",
-    quantidade: "",
-    paciente_id: 0,
-    vacina_id: 0,
-  });
+  const [editVenda, setEditVenda] = useState([
+    {
+      id: 0,
+      preco: "",
+      descricao: "",
+      quantidade: "",
+      paciente_id: 0,
+      vacina_id: 0,
+      dataVenda: "",
+    },
+  ]);
+
   useEffect(() => {
     Axios.get("http://localhost:3001/getVacina").then((response) => {
       setListaVacina(response.data);
@@ -40,6 +47,16 @@ export default function VendaVacina() {
       setListaVenda(response.data);
     });
   }, []);
+
+  const getData = (e) => {
+    setDataSelecionada({
+      dataVenda: e.target.value,
+    });
+  };
+
+  const getDias = (data) => {
+    return data.split("T")[0].split("-")[2];
+  };
 
   const handleChange = (event) => {
     setPesquisa(event.target.value);
@@ -54,7 +71,10 @@ export default function VendaVacina() {
             item["nomePaciente"]
               .toLowerCase()
               .includes(pesquisa.toLowerCase()) ||
-            item["nomeVacina"].toLowerCase().includes(pesquisa.toLowerCase())
+            item["nomeVacina"].toLowerCase().includes(pesquisa.toLowerCase()) ||
+            getDias(item["dataVenda"])
+              .toLowerCase()
+              .includes(pesquisa.toLowerCase())
           );
         })
       );
@@ -90,13 +110,13 @@ export default function VendaVacina() {
         setExibe(true);
         return false;
       }
-      if (typeof valor.preco == "undefined" || valor.preco == "") {
-        setMsg("Defina um Preço");
+      if (dataSelecionada.dataVenda == "") {
+        setMsg("Preencha o Campo Data");
         setExibe(true);
         return false;
       }
-      if (typeof valor.descricao == "undefined" || valor.descricao == "") {
-        setMsg("Preencha a Descrição");
+      if (typeof valor.preco == "undefined" || valor.preco == "") {
+        setMsg("Defina um Preço");
         setExibe(true);
         return false;
       }
@@ -106,13 +126,14 @@ export default function VendaVacina() {
 
   const clickButton = () => {
     if (verificaDados()) {
-      if (editVenda.id == 0) {
+      if (typeof editVenda.id == "undefined" || editVenda.id == 0) {
         Axios.post("http://localhost:3001/cadastrarVenda", {
           preco: valor.preco,
           descricao: valor.descricao,
           quantidade: valor.quantidade,
           paciente_id: pacienteSelecionado.id,
           vacina_id: vacinaSelecionada.id,
+          dataVenda: dataSelecionada.dataVenda,
         }).then(() => {
           setListaVenda([
             ...listaVenda,
@@ -122,6 +143,7 @@ export default function VendaVacina() {
               quantidade: valor.quantidade,
               paciente_id: pacienteSelecionado.id,
               vacina_id: vacinaSelecionada.id,
+              dataVenda: dataSelecionada.dataVenda,
             },
           ]);
           Axios.get("http://localhost:3001/getVenda").then((response) => {
@@ -136,6 +158,7 @@ export default function VendaVacina() {
           quantidade: valor.quantidade,
           paciente_id: pacienteSelecionado.id,
           vacina_id: vacinaSelecionada.id,
+          dataVenda: dataSelecionada.dataVenda,
         }).then(() => {
           setListaVenda(
             listaVenda.map((value) => {
@@ -146,6 +169,7 @@ export default function VendaVacina() {
                     quantidade: valor.quantidade,
                     paciente_id: pacienteSelecionado.id,
                     vacina_id: vacinaSelecionada.id,
+                    dataVenda: dataSelecionada.dataVenda,
                   }
                 : value;
             })
@@ -180,69 +204,100 @@ export default function VendaVacina() {
         />
         <br />
         <h1>Vender Vacina</h1>
-        <MsgRequired id={"pacienteID"} texto={"Paciente"} obrigatorio={true} />
-        <CaixaSelecao
-          id="pacienteID"
-          enderecoFonteDados="http://localhost:3001/getPaciente"
-          campoChave="id"
-          campoExibicao="nome"
-          funcaoSelecao={setPacienteSelecionado}
-        />
+        <div className="row">
+          <div className="col-md-2">
+            <MsgRequired
+              id={"pacienteID"}
+              texto={"Paciente"}
+              obrigatorio={true}
+            />
+            <CaixaSelecao
+              id="pacienteID"
+              enderecoFonteDados="http://localhost:3001/getPaciente"
+              campoChave="id"
+              campoExibicao="nome"
+              funcaoSelecao={setPacienteSelecionado}
+            />
+          </div>
+          <div className="col-md-2">
+            <MsgRequired id={"vacinaID"} texto={"Vacina"} obrigatorio={true} />
+            <CaixaSelecao
+              id="vacinaID"
+              enderecoFonteDados="http://localhost:3001/getVacina"
+              campoChave="id"
+              campoExibicao="nome"
+              funcaoSelecao={setVacinaSelecionada}
+            />
+          </div>
+        </div>
+
         <br />
-        <MsgRequired id={"vacinaID"} texto={"Vacina"} obrigatorio={true} />
-        <CaixaSelecao
-          id="vacinaID"
-          enderecoFonteDados="http://localhost:3001/getVacina"
-          campoChave="id"
-          campoExibicao="nome"
-          funcaoSelecao={setVacinaSelecionada}
-        />
-        <br />
-        <div className="form-group col-md-2">
-          <MsgRequired
-            id={"quantidadeID"}
-            texto={"Quantidade"}
-            obrigatorio={true}
-          />
-          <input
-            id="quantidadeID"
-            className="form-control"
-            defaultValue={editVenda.quantidade}
-            type="number"
-            name="quantidade"
-            placeholder=""
-            onChange={mudarValores}
-          />
+        <div className="row">
+          <div className="col-md-2">
+            <MsgRequired
+              id={"quantidadeID"}
+              texto={"Quantidade"}
+              obrigatorio={true}
+            />
+            <input
+              id="quantidadeID"
+              className="form-control"
+              defaultValue={editVenda.quantidade}
+              type="number"
+              name="quantidade"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
+          <div className="col-md-2">
+            <MsgRequired id={"precoID"} texto={"Preço"} obrigatorio={true} />
+            <input
+              id="precoID"
+              className="form-control"
+              defaultValue={editVenda.preco}
+              type="number"
+              name="preco"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
+          <br />
+          <div className="col-md-2">
+            <MsgRequired
+              id={"dataVendaId"}
+              texto={"Data da Venda"}
+              obrigatorio={true}
+            />
+            <input
+              className="form-control"
+              type="datetime-local"
+              id="dataVendaId"
+              defaultValue={editVenda.dataVenda}
+              onChange={(e) => {
+                getData(e);
+              }}
+              name="dataVenda"
+            ></input>
+          </div>
         </div>
         <br />
-        <div className="form-group col-md-2">
-          <MsgRequired id={"precoID"} texto={"Preço"} obrigatorio={true} />
-          <input
-            id="precoID"
-            className="form-control"
-            defaultValue={editVenda.preco}
-            type="number"
-            name="preco"
-            placeholder=""
-            onChange={mudarValores}
-          />
-        </div>
-        <br />
-        <div className="form-group col-md-2">
-          <MsgRequired
-            id={"descricaoID"}
-            texto={"Descrição"}
-            obrigatorio={false}
-          />
-          <input
-            id="descricaoID"
-            className="form-control"
-            defaultValue={editVenda.descricao}
-            type="text"
-            name="descricao"
-            placeholder=""
-            onChange={mudarValores}
-          />
+        <div className="row">
+          <div className="col-md-4">
+            <MsgRequired
+              id={"descricaoID"}
+              texto={"Descrição"}
+              obrigatorio={false}
+            />
+            <input
+              id="descricaoID"
+              className="form-control"
+              defaultValue={editVenda.descricao}
+              type="text"
+              name="descricao"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
         </div>
         <br />
         <div
@@ -260,8 +315,6 @@ export default function VendaVacina() {
             Vender
           </button>
         </div>
-        <div></div>
-        <br />
         <br />
         <div className="form-group col-md-3">
           <input
@@ -277,13 +330,14 @@ export default function VendaVacina() {
           <table className="table table-striped table-hover">
             <thead>
               <tr>
-                <th className="th-pacienteId">Paciente</th>
-                <th className="th-vacinaId">Vacina</th>
-                <th className="th-descricaoId">Descrição</th>
-                <th className="th-valorId">Valor Unitário</th>
-                <th className="th-qtdeId">Quantidade</th>
-                <th className="th-valorId">Valor Total</th>
-                <th className="th-acoesId">Ações</th>
+                <th id="th-pacienteId">Paciente</th>
+                <th id="th-vacinaId">Vacina</th>
+                <th id="th-descricaoId">Descrição</th>
+                <th id="th-descricaoId">Data da Venda</th>
+                <th id="th-valorId">Valor Unitário</th>
+                <th id="th-qtdeId">Quantidade</th>
+                <th id="th-valorId">Valor Total</th>
+                <th id="th-acoesId">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -297,6 +351,7 @@ export default function VendaVacina() {
                       nomePaciente={item.nomePaciente}
                       nomeVacina={item.nomeVacina}
                       preco={item.preco}
+                      dataVenda={item.dataVenda}
                       setLista={setListaVenda}
                       listaFunc={listaVenda}
                       editFunc={setEditVenda}

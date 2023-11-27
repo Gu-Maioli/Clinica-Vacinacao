@@ -41,6 +41,10 @@ export default function CompraVacina() {
     });
   };
 
+  const getDias = (data) => {
+    return data.split("T")[0].split("-")[2];
+  };
+
   const handleChange = (event) => {
     setPesquisa(event.target.value);
     if (event.target.value == "") {
@@ -53,6 +57,9 @@ export default function CompraVacina() {
           return (
             item["nomeVacina"].toLowerCase().includes(pesquisa.toLowerCase()) ||
             item["nomeFornecedor"]
+              .toLowerCase()
+              .includes(pesquisa.toLowerCase()) ||
+            getDias(item["dataCompra"])
               .toLowerCase()
               .includes(pesquisa.toLowerCase())
           );
@@ -140,7 +147,7 @@ export default function CompraVacina() {
 
   const clickButton = () => {
     if (verificaDados()) {
-      if (editCompra.id == 0) {
+      if (typeof editCompra.id == "undefined" || editCompra.id == 0) {
         Axios.post("http://localhost:3001/cadastrarCompra", {
           descricao: valor.descricao,
           quantidade: valor.quantidade,
@@ -213,65 +220,87 @@ export default function CompraVacina() {
       <br />
       <div className="container">
         <h1>Comprar Vacina</h1>
-        <div className="form-group">
-          <MsgRequired id={"vacinaID"} texto={"Vacina"} obrigatorio={true} />
-          <CaixaSelecao
-            id="vacinaID"
-            enderecoFonteDados="http://localhost:3001/getVacina"
-            campoChave="id"
-            campoExibicao="nome"
-            funcaoSelecao={setVacinaSelecionada}
-          />
+        <div className="row">
+          <div className="col-md-3">
+            <MsgRequired id={"vacinaID"} texto={"Vacina"} obrigatorio={true} />
+            <CaixaSelecao
+              id="vacinaID"
+              enderecoFonteDados="http://localhost:3001/getVacina"
+              campoChave="id"
+              campoExibicao="nome"
+              funcaoSelecao={setVacinaSelecionada}
+            />
+          </div>
           <br />
-          <MsgRequired
-            id={"fornecedorID"}
-            texto={"Fornecedor"}
-            obrigatorio={true}
-          />
-          <CaixaSelecao
-            id="fornecedorID"
-            enderecoFonteDados="http://localhost:3001/getFornecedor"
-            campoChave="id"
-            campoExibicao="nome"
-            funcaoSelecao={setFornecedorSelecionado}
-          />
+          <div className="col-md-3">
+            <MsgRequired
+              id={"fornecedorID"}
+              texto={"Fornecedor"}
+              obrigatorio={true}
+            />
+            <CaixaSelecao
+              id="fornecedorID"
+              enderecoFonteDados="http://localhost:3001/getFornecedor"
+              campoChave="id"
+              campoExibicao="nome"
+              funcaoSelecao={setFornecedorSelecionado}
+            />
+          </div>
         </div>
         <br />
-        <div className="form-group col-md-2">
-          <MsgRequired
-            id={"quantidadeID"}
-            texto={"Quantidade"}
-            obrigatorio={true}
-          />
-          <input
-            id="quantidadeID"
-            className="form-control"
-            defaultValue={editCompra.quantidade}
-            type="number"
-            name="quantidade"
-            placeholder=""
-            onChange={mudarValores}
-          />
-        </div>
-        <br />
-        <div className="form-group col-md-2">
-          <input
-            className="form-control"
-            hidden
-            defaultValue={editCompra.id}
-            type="text"
-            name="id"
-          />
-          <MsgRequired id={"precoID"} texto={"Preço"} obrigatorio={true} />
-          <input
-            id="precoID"
-            className="form-control"
-            defaultValue={editCompra.precoUni}
-            type="number"
-            name="precoUni"
-            placeholder=""
-            onChange={mudarValores}
-          />
+        <div className="row">
+          <div className="col-md-2">
+            <MsgRequired
+              id={"quantidadeID"}
+              texto={"Quantidade"}
+              obrigatorio={true}
+            />
+            <input
+              id="quantidadeID"
+              className="form-control"
+              defaultValue={editCompra.quantidade}
+              type="number"
+              name="quantidade"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
+          <div className="col-md-2">
+            <input
+              className="form-control"
+              hidden
+              defaultValue={editCompra.id}
+              type="text"
+              name="id"
+            />
+            <MsgRequired id={"precoID"} texto={"Preço"} obrigatorio={true} />
+            <input
+              id="precoID"
+              className="form-control"
+              defaultValue={editCompra.precoUni}
+              type="number"
+              name="precoUni"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
+          <div className="col-md-2">
+            <MsgRequired
+              id={"dataCompraID"}
+              texto={"Data da Compra"}
+              obrigatorio={true}
+            />
+            <input
+              className="form-control"
+              type="datetime-local"
+              id="dataCompraID"
+              defaultValue={editCompra.dataCompra}
+              onChange={(e) => {
+                getData(e);
+              }}
+              name="dataCompra"
+            ></input>
+          </div>
         </div>
         <br />
         <div className="form-group col-md-3">
@@ -289,24 +318,6 @@ export default function CompraVacina() {
             placeholder=""
             onChange={mudarValores}
           />
-        </div>
-        <br />
-        <div className="col-md-3 mb-3">
-          <MsgRequired
-            id={"dataCompraID"}
-            texto={"Data da Compra"}
-            obrigatorio={true}
-          />
-          <input
-            className="form-control"
-            type="datetime-local"
-            id="dataCompraID"
-            defaultValue={editCompra.dataCompra}
-            onChange={(e) => {
-              getData(e);
-            }}
-            name="dataCompra"
-          ></input>
         </div>
         <br />
         <div

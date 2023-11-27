@@ -13,7 +13,6 @@ export default function Tabela(props) {
   });
 
   const editFuncionario = (id, nome, cargo, acesso) => {
-    console.log("id " + id);
     props.editFunc({
       id: id,
       nome: nome,

@@ -2,23 +2,46 @@ import React, { useRef, useState } from "react";
 import Axios from "axios";
 
 export default function Tabela(props) {
-  const [editValues, setEditValues] = useState({
-    id: props.id,
-    nome: props.nome,
-    endereco: props.endereco,
-    sexo: props.sexo,
-    observacao: props.observacao,
-  });
-
-  const editPaciente = (id, nome, endereco, sexo, observacao) => {
-    setEditValues({
+  const editPaciente = (id, nome, endereco, sexo, observacao, dataCadastro) => {
+    props.editFunc({
       id: id,
       nome: nome,
       endereco: endereco,
       sexo: sexo,
       observacao: observacao,
+      dataCadastro: arrumaDataToSave(dataCadastro.split(".")[0]),
     });
-    props.editFunc(editValues);
+  };
+
+  const arrumaDataToSave = (data) => {
+    const horas =
+      data.split("T")[1].split(":")[0] -
+      3 +
+      ":" +
+      data.split("T")[1].split(":")[1] +
+      ":" +
+      data.split("T")[1].split(":")[2];
+    const dataCompleta = data.split("T")[0] + "T" + horas;
+
+    return dataCompleta;
+  };
+
+  const arrumaData = (dataInicio) => {
+    const horas =
+      dataInicio.split("T")[1].split(":")[0] +
+      ":" +
+      dataInicio.split("T")[1].split(":")[1];
+    const hora = horas.split(":")[0] - 3;
+    const segundos = horas.split(":")[1];
+    const newHora = hora + ":" + segundos;
+    const data =
+      dataInicio.split("T")[0].split("-")[2] +
+      "/" +
+      dataInicio.split("T")[0].split("-")[1] +
+      "/" +
+      dataInicio.split("T")[0].split("-")[0];
+
+    return data + " " + newHora;
   };
 
   const deletePaciente = (id) => {
@@ -32,7 +55,6 @@ export default function Tabela(props) {
   };
 
   const verificaSexo = (sexo) => {
-    console.log("> " + sexo);
     if (sexo == 1) return "Masculino";
     else if (sexo == 2) return "Feminino";
     else return "Não Identificado";
@@ -43,6 +65,7 @@ export default function Tabela(props) {
       <tr key={props.id}>
         <td className="">{props.nome}</td>
         <td className="">{props.endereco}</td>
+        <td className="">{arrumaData(props.dataCadastro)}</td>
         <td className="">{verificaSexo(props.sexo)}</td>
         <td className="">{props.observacao}</td>
         <td className="col-md-2">
@@ -54,7 +77,8 @@ export default function Tabela(props) {
                 props.nome,
                 props.endereco,
                 props.sexo,
-                props.observacao
+                props.observacao,
+                props.dataCadastro
               )
             }
           >

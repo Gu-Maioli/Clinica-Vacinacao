@@ -1,7 +1,6 @@
 "use client";
 import "app/style.css";
 import React, { useEffect, useState } from "react";
-import { Container, Form, Row, Col } from "react-bootstrap";
 import CaixaSelecao from "./CaixaSelecao.jsx";
 import ImageWithMessage from "../msgExplicativa/ImageWithMessage.jsx";
 import Tabela from "./Tabela";
@@ -24,7 +23,7 @@ export default function DescarteVacina() {
   const [quantidadeAtual, setQuantidadeAtual] = useState({
     quantidade: "",
   });
-  // arrumar ao clicar na vacina
+
   const [editDescarte, setEditDescarte] = useState({
     id: 0,
     vacina_id: 0,
@@ -32,6 +31,10 @@ export default function DescarteVacina() {
     qtdeDescartada: "",
     quantidadeAtual: "",
   });
+
+  const getDias = (data) => {
+    return data.split("T")[0].split("-")[2];
+  };
 
   const handleChange = (event) => {
     setPesquisa(event.target.value);
@@ -42,9 +45,12 @@ export default function DescarteVacina() {
     } else {
       setListaDescarte(
         listaDescarte.filter((item) => {
-          return item["nomeVacina"]
-            .toLowerCase()
-            .includes(pesquisa.toLowerCase());
+          return (
+            item["nomeVacina"].toLowerCase().includes(pesquisa.toLowerCase()) ||
+            getDias(item["dataDescarte"])
+              .toLowerCase()
+              .includes(pesquisa.toLowerCase())
+          );
         })
       );
     }
@@ -87,7 +93,7 @@ export default function DescarteVacina() {
 
   const clickButton = () => {
     if (verificaDados()) {
-      if (editDescarte.id == 0) {
+      if (typeof editDescarte.id == "undefined" || editDescarte.id == 0) {
         Axios.post("http://localhost:3001/cadastrarDescarte", {
           quantidade: valor.quantidade,
           vacina_id: vacinaSelecionada.id,
@@ -159,52 +165,59 @@ export default function DescarteVacina() {
           type="text"
           name="id"
         />
-        <div className="form-group col-8">
-          <MsgRequired id={"vacinaID"} texto={"Vacina"} obrigatorio={true} />
-          <CaixaSelecao
-            id="vacinaID"
-            enderecoFonteDados="http://localhost:3001/getVacina"
-            campoChave="id"
-            campoExibicao="nome"
-            funcaoSelecao={setVacinaSelecionada}
-            setQuantidade={setQuantidadeAtual}
-          />
+        <div className="row">
+          <div className="col-md-4">
+            <MsgRequired id={"vacinaID"} texto={"Vacina"} obrigatorio={true} />
+            <CaixaSelecao
+              id="vacinaID"
+              enderecoFonteDados="http://localhost:3001/getVacina"
+              campoChave="id"
+              campoExibicao="nome"
+              funcaoSelecao={setVacinaSelecionada}
+              setQuantidade={setQuantidadeAtual}
+            />
+          </div>
         </div>
         <br />
-        <div className="form-group col-md-3">
-          <MsgRequired
-            id={"quantidadeAtualID"}
-            texto={"Quantidade Atual"}
-            obrigatorio={false}
-          />
-          <input
-            id="quantidadeAtualID"
-            className="form-control"
-            disabled
-            defaultValue={quantidadeAtual.quantidade}
-            type="number"
-            name="quantidadeAtual"
-            placeholder=""
-          />
+        <div className="row">
+          <div className="col-md-2">
+            <MsgRequired
+              id={"quantidadeAtualID"}
+              texto={"Quantidade Atual"}
+              obrigatorio={false}
+            />
+            <input
+              id="quantidadeAtualID"
+              className="form-control"
+              disabled
+              defaultValue={quantidadeAtual.quantidade}
+              type="number"
+              name="quantidadeAtual"
+              placeholder=""
+            />
+          </div>
         </div>
         <br />
-        <div className="form-group col-md-3">
-          <MsgRequired
-            id={"quantidadeDescarteID"}
-            texto={"Quantidade a Descartar"}
-            obrigatorio={true}
-          />
-          <input
-            id="quantidadeDescarteID"
-            className="form-control"
-            defaultValue={editDescarte.qtdeDescartada}
-            type="number"
-            name="qtdeDescartada"
-            placeholder=""
-            onChange={mudarValores}
-          />
+        <div className="row">
+          <div className="col-md-2">
+            <MsgRequired
+              id={"quantidadeDescarteID"}
+              texto={"Quantidade a Descartar"}
+              obrigatorio={true}
+            />
+            <input
+              id="quantidadeDescarteID"
+              className="form-control"
+              defaultValue={editDescarte.qtdeDescartada}
+              type="number"
+              name="qtdeDescartada"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
         </div>
         <br />
+
         <div
           className={
             exibe

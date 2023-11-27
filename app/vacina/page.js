@@ -126,58 +126,65 @@ const Vacina = () => {
       <div className="container">
         <br />
         <h1>Gerenciar Vacina</h1>
-        <div className="form-group col-md-3">
-          <input
-            className="form-control"
-            hidden
-            defaultValue={editVacina.id}
-            type="text"
-            name="id"
-          />
-          <MsgRequired
-            id={"vacinaID"}
-            texto={"Nome da Vacina"}
-            obrigatorio={true}
-          />
-          <input
-            id="vacinaID"
-            className="form-control"
-            defaultValue={editVacina.nome}
-            type="text"
-            name="nome"
-            placeholder=""
-            onChange={mudarValores}
-          />
+        <input
+          className="form-control"
+          hidden
+          defaultValue={editVacina.id}
+          type="text"
+          name="id"
+        />
+        <div className="row">
+          <div className="col-md-3">
+            <MsgRequired
+              id={"vacinaID"}
+              texto={"Nome da Vacina"}
+              obrigatorio={true}
+            />
+            <input
+              id="vacinaID"
+              className="form-control"
+              defaultValue={editVacina.nome}
+              type="text"
+              name="nome"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
+          <div className="col-md-2">
+            <MsgRequired
+              id={"quantidadeID"}
+              texto={"Quantidade"}
+              obrigatorio={true}
+            />
+            <input
+              id="quantidadeID"
+              className="form-control"
+              defaultValue={editVacina.quantidade}
+              type="number"
+              name="quantidade"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
         </div>
         <br />
-        <div className="form-group col-md-3">
-          <MsgRequired
-            id={"quantidadeID"}
-            texto={"Quantidade"}
-            obrigatorio={true}
-          />
-          <input
-            id="quantidadeID"
-            className="form-control"
-            defaultValue={editVacina.quantidade}
-            type="text"
-            name="quantidade"
-            placeholder=""
-            onChange={mudarValores}
-          />
-        </div>
-        <br />
-        <div className="form-group col-md-3">
-          <MsgRequired id={"loteID"} texto={"Codigo Lote"} obrigatorio={true} />
-          <input
-            id="loteID"
-            className="form-control"
-            defaultValue={editVacina.lote}
-            type="text"
-            name="lote"
-            placeholder=""
-            onChange={mudarValores}
-          />
+        <div className="row">
+          <div className="col-md-2">
+            <MsgRequired
+              id={"loteID"}
+              texto={"Codigo Lote"}
+              obrigatorio={true}
+            />
+            <input
+              id="loteID"
+              className="form-control"
+              defaultValue={editVacina.lote}
+              type="text"
+              name="lote"
+              placeholder=""
+              onChange={mudarValores}
+            />
+          </div>
         </div>
         <div
           className={

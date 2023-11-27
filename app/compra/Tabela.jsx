@@ -29,8 +29,6 @@ export default function Tabela(props) {
       ":" +
       data.split("T")[1].split(":")[2];
     const dataCompleta = data.split("T")[0] + "T" + horas;
-    console.log("> " + dataCompleta);
-
     //data: 2023-11-30T15:33:00
     return dataCompleta;
   };
@@ -44,6 +42,7 @@ export default function Tabela(props) {
     vacina_id,
     dataCompra
   ) => {
+    console.log("data: " + dataCompra);
     props.editFunc({
       id: id,
       descricao: descricao,

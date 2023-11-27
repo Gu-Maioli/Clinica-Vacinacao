@@ -52,30 +52,26 @@ export default function CaixaSelecao({
   }, []);
 
   return (
-    <div style={{ width: "50%" }}>
-      <Row>
-        <Col md={11}>
-          <Form.Select
-            value={valorSelecionado[campoChave]}
-            onChange={(evento) => {
-              const itemSelecionado = evento.currentTarget.value;
-              const pos = dados
-                .map((item) => item[campoChave].toString())
-                .indexOf(itemSelecionado); // lista somente de ids
-              setValorSelecionado(dados[pos]);
-              funcaoSelecao(dados[pos]);
-            }}
-          >
-            {dados.map((item) => {
-              return (
-                <option key={item[campoChave]} value={item[campoChave]}>
-                  {item[campoExibicao]}
-                </option>
-              );
-            })}
-          </Form.Select>
-        </Col>
-      </Row>
+    <div>
+      <Form.Select
+        value={valorSelecionado[campoChave]}
+        onChange={(evento) => {
+          const itemSelecionado = evento.currentTarget.value;
+          const pos = dados
+            .map((item) => item[campoChave].toString())
+            .indexOf(itemSelecionado); // lista somente de ids
+          setValorSelecionado(dados[pos]);
+          funcaoSelecao(dados[pos]);
+        }}
+      >
+        {dados.map((item) => {
+          return (
+            <option key={item[campoChave]} value={item[campoChave]}>
+              {item[campoExibicao]}
+            </option>
+          );
+        })}
+      </Form.Select>
     </div>
   );
 }

@@ -22,9 +22,9 @@ export default function Home() {
 
   return (
     <div className="container-fluid px-4">
-      <h1 className="mt-4">Home</h1>
+      <h1 className="mt-4">Clínica Dr. Jacaré</h1>
       <ol className="breadcrumb mb-4">
-        <li className="breadcrumb-item active">Home</li>
+        <li className="breadcrumb-item active"></li>
       </ol>
       <div className="row">
         <div className="col-xl-3 col-md-6">
