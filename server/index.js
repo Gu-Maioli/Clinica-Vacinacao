@@ -509,7 +509,7 @@ app.get("/getVendasPaciente", (req, res) => {
 
 app.get("/getComprasFornecedor", (req, res) => {
   let sql =
-    "SELECT registrocompra.id, registrocompra.descricao, registrocompra.precoUni, registrocompra.quantidade, vacina.nome FROM registrocompra INNER JOIN fornecedor ON fornecedor.id = registrocompra.fornecedor_id INNER JOIN vacina ON vacina.id = registrocompra.vacina_id WHERE registrocompra.id > 0";
+    "SELECT registrocompra.id, registrocompra.descricao, registrocompra.precoUni, registrocompra.quantidade, fornecedor.nome AS nomeFornecedor, (registrocompra.precoUni * registrocompra.quantidade) AS total, vacina.nome FROM registrocompra INNER JOIN fornecedor ON fornecedor.id = registrocompra.fornecedor_id INNER JOIN vacina ON vacina.id = registrocompra.vacina_id WHERE registrocompra.id > 0";
 
   db.query(sql, (err, result) => {
     if (err) console.log(err);

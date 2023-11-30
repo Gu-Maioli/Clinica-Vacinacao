@@ -17,9 +17,19 @@ export default function fornecedorPDF(fornecedores) {
     return [
       { text: fornecedor.id, fontSize: 9, margin: [0, 2, 0, 2] },
       { text: fornecedor.nome, fontSize: 9, margin: [0, 2, 0, 2] },
+      { text: fornecedor.nomeFornecedor, fontSize: 9, margin: [0, 2, 0, 2] },
       { text: fornecedor.descricao, fontSize: 9, margin: [0, 2, 0, 2] },
-      { text: "R$: " + fornecedor.precoUni, fontSize: 9, margin: [0, 2, 0, 2] },
+      {
+        text: "R$: " + fornecedor.precoUni + ",00",
+        fontSize: 9,
+        margin: [0, 2, 0, 2],
+      },
       { text: fornecedor.quantidade, fontSize: 9, margin: [0, 2, 0, 2] },
+      {
+        text: "R$: " + fornecedor.total + ",00",
+        fontSize: 9,
+        margin: [0, 2, 0, 2],
+      },
     ];
   });
 
@@ -27,14 +37,16 @@ export default function fornecedorPDF(fornecedores) {
     {
       table: {
         headerRows: 1,
-        widths: ["auto", "*", "*", "auto", "auto"],
+        widths: ["auto", "*", "*", "auto", "auto", "auto", "auto"],
         body: [
           [
             { text: "Id", style: "tableHeader", fontSize: 9 },
             { text: "Vacina", style: "tableHeader", fontSize: 9 },
+            { text: "Fornecedor", style: "tableHeader", fontSize: 9 },
             { text: "Descrição", style: "tableHeader", fontSize: 9 },
             { text: "Preço", style: "tableHeader", fontSize: 9 },
             { text: "Quantidade", style: "tableHeader", fontSize: 9 },
+            { text: "Total", style: "tableHeader", fontSize: 9 },
           ],
           ...dados,
         ],

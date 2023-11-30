@@ -18,9 +18,17 @@ export default function pacientesPDF(pacientes) {
       { text: paciente.pacienteNome, fontSize: 9, margin: [0, 2, 0, 2] },
       { text: paciente.endereco, fontSize: 9, margin: [0, 2, 0, 2] },
       { text: paciente.nomeVacina, fontSize: 9, margin: [0, 2, 0, 2] },
-      { text: paciente.precoUniVenda, fontSize: 9, margin: [0, 2, 0, 2] },
+      {
+        text: "R$: " + paciente.precoUniVenda + ",00",
+        fontSize: 9,
+        margin: [0, 2, 0, 2],
+      },
       { text: paciente.qtdeVenda, fontSize: 9, margin: [0, 2, 0, 2] },
-      { text: paciente.total, fontSize: 9, margin: [0, 2, 0, 2] },
+      {
+        text: "R$: " + paciente.total + ",00",
+        fontSize: 9,
+        margin: [0, 2, 0, 2],
+      },
     ];
   });
 
