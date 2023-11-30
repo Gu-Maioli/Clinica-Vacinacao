@@ -75,9 +75,11 @@ export default function Tabela(props) {
         <td className="">{props.nomeFornecedor}</td>
         <td className="">{arrumaData(props.dataCompra)}</td>
         <td className="">{props.descricao}</td>
-        <td className="">R$: {props.precoUni}</td>
+        <td className="">R$: {props.precoUni},00</td>
         <td className="">{props.quantidade}</td>
-        <td className="">R$: {somaTotal(props.quantidade, props.precoUni)}</td>
+        <td className="">
+          R$: {somaTotal(props.quantidade, props.precoUni)},00
+        </td>
         <td className="col-md-2">
           <button
             className="btn btn-info"
